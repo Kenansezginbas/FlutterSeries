@@ -14,11 +14,16 @@ class AuthService {
     }
   }
 
-  Future forgotPassword(String email) async {
+  Future<String?> forgotPassword(String email) async {
+    String? res;
     try {
       final result = await firebaseAuth.sendPasswordResetEmail(email: email);
       print("Mail kutunuzu kontrol ediniz");
-    } catch (e) {}
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "email-already-in-use") {
+        res = "Mail Zaten Kayitli.";
+      }
+    }
   }
 
   Future<String?> signIn(String email, String password) async {
@@ -28,12 +33,42 @@ class AuthService {
           email: email, password: password);
       res = "success";
     } on FirebaseAuthException catch (e) {
-      if (e.code == "user-not-found") {
-        res = "Kullanici Bulunamadi";
-      } else if (e.code == "wrong-password") {
-        res = "Sifre Yanlis";
-      } else if (e.code == "user-disabled") {
-        res = "Kullanici Pasif";
+      switch (e.code) {
+        case "user-not-found":
+          res = "Kullanici Bulunamadi";
+          break;
+        case "wrong-password":
+          res = "Hatali Sifre";
+          break;
+        case "user-disabled":
+          res = "Kullanici Pasif";
+          break;
+        default:
+          res = "Bir Hata Ile Karsilasildi, Birazdan Tekrar Deneyiniz.";
+          break;
+      }
+    }
+    return res;
+  }
+
+  Future<String?> signUp(String email, String password) async {
+    String? res;
+    try {
+      final result = await firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      res = "success";
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "email-already-in-use":
+          res = "Mail Zaten Kayitli.";
+          break;
+        case "ERROR_INVALID_EMAIL":
+        case "invalid-email":
+          res = "Gecersiz Mail";
+          break;
+        default:
+          res = "Bir Hata Ile Karsilasildi, Birazdan Tekrar Deneyiniz.";
+          break;
       }
     }
     return res;
