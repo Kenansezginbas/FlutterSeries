@@ -147,13 +147,6 @@ class _LoginPageState extends State<LoginPage> {
   void signIn() async {
     if (formkey.currentState!.validate()) {
       formkey.currentState!.save();
-      try {
-        final userResult = await firebaseAuth.signInWithEmailAndPassword(
-            email: email, password: password);
-        Navigator.pushReplacementNamed(context, "/homePage");
-        print(userResult.user!.email);
-      } catch (e) {
-        print(e.toString());
       }
     } else {}
   }
