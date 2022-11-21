@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ui/pages/home_page.dart';
 import 'package:flutter_ui/service/auth_service.dart';
 import 'package:flutter_ui/utils/customColors.dart';
 import 'package:flutter_ui/utils/customTextStyle.dart';
@@ -147,8 +148,27 @@ class _LoginPageState extends State<LoginPage> {
   void signIn() async {
     if (formkey.currentState!.validate()) {
       formkey.currentState!.save();
+      final result = await authService.signIn(email, password);
+      if (result == "success") {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => HomePage()),
+            (route) => false);
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Hata"),
+                content: Text(result!),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("Geri Don"))
+                ],
+              );
+            });
       }
-    } else {}
+    }
   }
 
   Center signUpButton() {
