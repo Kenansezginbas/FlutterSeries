@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ui/pages/home_page.dart';
+import 'package:flutter_ui/service/auth_service.dart';
 import 'package:flutter_ui/utils/customColors.dart';
 import 'package:flutter_ui/utils/customTextStyle.dart';
 
@@ -11,9 +13,10 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  late String email, password;
+  late String email, fullname, username, password;
   final formkey = GlobalKey<FormState>();
   final firebaseAuth = FirebaseAuth.instance;
+  final authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +44,10 @@ class _SignUpState extends State<SignUp> {
                     titleText(),
                     customSizedBox(),
                     emailTextField(),
+                    customSizedBox(),
+                    fullNameTextField(),
+                    customSizedBox(),
+                    usernameTextField(),
                     customSizedBox(),
                     passwordTextField(),
                     customSizedBox(),
@@ -79,6 +86,36 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
+  TextFormField fullNameTextField() {
+    return TextFormField(
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "Bilgileri Eksiksiz Doldurunuz";
+        } else {}
+      },
+      onSaved: (value) {
+        fullname = value!;
+      },
+      style: TextStyle(color: Colors.white),
+      decoration: customInputDecoration("Ad Soyad"),
+    );
+  }
+
+  TextFormField usernameTextField() {
+    return TextFormField(
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "Bilgileri Eksiksiz Doldurunuz";
+        } else {}
+      },
+      onSaved: (value) {
+        username = value!;
+      },
+      style: TextStyle(color: Colors.white),
+      decoration: customInputDecoration("Kullanici Adi"),
+    );
+  }
+
   TextFormField passwordTextField() {
     return TextFormField(
       validator: (value) {
@@ -98,7 +135,7 @@ class _SignUpState extends State<SignUp> {
   Center signUpButton() {
     return Center(
       child: TextButton(
-        onPressed: signIn,
+        onPressed: signUp,
         child: customText(
           "Hesap Olustur",
           CustomColors.textButtonColor,
@@ -107,23 +144,14 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  void signIn() async {
+  void signUp() async {
     if (formkey.currentState!.validate()) {
       formkey.currentState!.save();
-      try {
-        var userResult = await firebaseAuth.createUserWithEmailAndPassword(
-            email: email, password: password);
-        formkey.currentState!.reset();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-                "Kullanici basariliyla kaydedildi, giris sayfasina yonlendiriliyorsunuz"),
-          ),
-        );
-        Navigator.pushReplacementNamed(context, "/loginPage");
-      } catch (e) {
-        print(e.toString());
-      }
+      final result =
+          await authService.signUp(email, username, fullname, password);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => HomePage()),
+          (route) => false);
     } else {}
   }
 
