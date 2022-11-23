@@ -120,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () {},
         child: customText(
           "Sifremi Unuttum",
-          CustomColors.textButtonColor,
+          CustomColors.pinkColor,
         ),
       ),
     );
@@ -177,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () => Navigator.pushNamed(context, "/signUp"),
         child: customText(
           "Hesap Olustur",
-          CustomColors.textButtonColor,
+          CustomColors.pinkColor,
         ),
       ),
     );

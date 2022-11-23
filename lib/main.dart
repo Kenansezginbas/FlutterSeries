@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ui/pages/auth/login_page.dart';
 import 'package:flutter_ui/pages/auth/sign_up.dart';
 import 'package:flutter_ui/pages/home_page.dart';
+import 'package:flutter_ui/pages/main_page.dart';
 import 'package:flutter_ui/utils/customColors.dart';
 import 'firebase_options.dart';
 
@@ -30,11 +30,9 @@ class MyApp extends StatelessWidget {
         "/homePage": (context) => HomePage()
       },
       theme: ThemeData(
-        scaffoldBackgroundColor: CustomColors.scaffoldBackgroundColor,
+        scaffoldBackgroundColor: CustomColors.darkColor,
       ),
-      home: Scaffold(
-        body: LoginPage(),
-      ),
+      home: MainPage(),
     );
   }
 }
